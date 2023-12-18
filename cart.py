@@ -184,7 +184,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    render = True
+    render = False
     cartpole = CartPole(args.env_id, args.train, args.test, args.model, render)
     cartpole.run()
 
