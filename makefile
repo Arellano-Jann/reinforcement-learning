@@ -9,7 +9,7 @@ test_cart:
 
 car:
 	python3 car.py --train
-	python3 car.py --test --model car.npy
+	python3 car.py --test --model carBins3.npy
 
 cart:
 	python3 cart.py --train
