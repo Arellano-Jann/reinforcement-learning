@@ -13,9 +13,10 @@ from gym import wrappers, logger
 class MountainCar:
     def __init__(self, env_id, train, test, model, render=False):
         # state =  [pos(x), vel(xdot)]
-        self.min_vals = [-1.2,     -0.07]  
-        self.max_vals = [0.6,     0.07]  
-        self.num_bins = [9,     9]  # This needs to be changed
+        self.min_vals = [-1.2, -0.07]  
+        self.max_vals = [0.6, 0.07]  
+        # self.num_bins = [9, 9] # This needs to be changed
+        self.num_bins = [20,20] # This needs to be changed
         self.bins = np.array([np.linspace(self.min_vals[i], self.max_vals[i], self.num_bins[i])
                         for i in range(len(self.max_vals))])
         self.env_id = env_id
@@ -73,8 +74,10 @@ class MountainCar:
         # learning rate (alpha) and the discount factor (gamma)
         ############################################################################
 
-        alpha = 0.3  # This needs to be changed
-        gamma = 0.5  # This needs to be changed
+        # alpha = 0.3 # This needs to be changed
+        # gamma = 0.5 # This needs to be changed
+        alpha = 0.95 # This needs to be changed
+        gamma = 0.95 # This needs to be changed
         # epsion-greedy params
         eps_start = 0.9
         eps_end = 0.05
@@ -98,7 +101,13 @@ class MountainCar:
                     # CS482: Implement epsilon-greedy strategy that chooses 
                     # actions based on exploration or exploitation phase.
                     ###############################################################
-                    action = np.random.randint(env.action_space.n)
+                    
+                    if np.random.random() <= eps_start:
+                        action = np.random.randint(env.action_space.n)
+                    else:
+                        action = np.argmax(Q[s])
+                        
+                    eps_start = max(eps_start - 1/eps_decay, eps_end)
 
                     state, reward, done, info,_ = env.step(action)
                     sprime = self.discretize_state(state)
@@ -107,8 +116,8 @@ class MountainCar:
                     ################################################################
                     # CS482: Implement the update rule for Q learning here
                     ################################################################
-
-                    Q[s, action] += 0  # This needs to be changed
+                    
+                    Q[s, action] += alpha * (reward + gamma * predicted_value - Q[s, action])
 
                     s = sprime
 
@@ -122,7 +131,7 @@ class MountainCar:
                     print("fail ")
                 else:
                     print("success")
-            np.save('car.npy', Q)
+            np.save('carBinsRender.npy', Q)
             print("Q table saved")
 
         if self.test:
@@ -175,7 +184,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    render=True
+    render=False
     mountain_car = MountainCar(args.env_id, args.train, args.test, args.model, render)
     mountain_car.run()
 

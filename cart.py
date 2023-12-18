@@ -74,14 +74,17 @@ class CartPole:
         # learning rate (alpha) and the discount factor (gamma)
         ############################################################################
 
-        alpha = 0.3  # This needs to be changed 
-        gamma = 0.5  #This needs to be changed
+        # alpha = 0.3 # This needs to be changed 
+        # gamma = 0.5 # This needs to be changed
+        alpha = 0.1  # This needs to be changed 
+        gamma = 0.95 # This needs to be changed
         # epsion-greedy params
-        eps_start = 0.9
+        # eps_start = 0.9 # Changed this
+        eps_start = 1.0
         eps_end = 0.05
         eps_decay = 100000
         if self.train:
-            n_episodes = 50001    # This might need to be changed
+            n_episodes = 50001 # 75000    # This might need to be changed
             time_ = 1 
             for episode in range(n_episodes):
                 tick = 0
@@ -100,7 +103,14 @@ class CartPole:
                     # CS482: Implement epsilon-greedy strategy that chooses 
                     # actions based on exploration or exploitation phase.
                     ################################################################
-                    action = np.random.randint(env.action_space.n)
+                    # action = np.random.randint(env.action_space.n)
+                    
+                    if np.random.random() <= eps_start: # exploration
+                        action = np.random.randint(env.action_space.n)
+                    else:
+                        action = np.argmax(Q[s]) # exploitation
+                        
+                    eps_start = max(eps_start - 1/eps_decay, eps_end)
                     
                     state, reward, done, info,_ = env.step(action)
                     sprime = self.discretize_state(state)
@@ -109,12 +119,11 @@ class CartPole:
                     ################################################################
                     # CS482: Implement the update rule for Q learning here
                     ################################################################
-                    Q[s, action] += 0 #This needs to be changed
-
+                    Q[s, action] += alpha * (reward + gamma * predicted_value - Q[s, action])
                     s = sprime
 
-                if episode % 1000 == 0:
-                    alpha *= .996
+                # if episode % 1000 == 0:
+                #     alpha *= .996
             
                 if tick < 499:
                     print ("fail " + str(tick) )
@@ -175,7 +184,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    render = False
+    render = True
     cartpole = CartPole(args.env_id, args.train, args.test, args.model, render)
     cartpole.run()
 
