@@ -131,7 +131,7 @@ class MountainCar:
                     print("fail ")
                 else:
                     print("success")
-            np.save('carBinsRender.npy', Q)
+            np.save('car.npy', Q)
             print("Q table saved")
 
         if self.test:
