@@ -16,7 +16,7 @@ class MountainCar:
         self.min_vals = [-1.2, -0.07]  
         self.max_vals = [0.6, 0.07]  
         # self.num_bins = [9, 9] # This needs to be changed
-        self.num_bins = [20,20] # This needs to be changed
+        self.num_bins = [40,40] # This needs to be changed
         self.bins = np.array([np.linspace(self.min_vals[i], self.max_vals[i], self.num_bins[i])
                         for i in range(len(self.max_vals))])
         self.env_id = env_id
@@ -76,7 +76,7 @@ class MountainCar:
 
         # alpha = 0.3 # This needs to be changed
         # gamma = 0.5 # This needs to be changed
-        alpha = 0.95 # This needs to be changed
+        alpha = 0.5 # This needs to be changed
         gamma = 0.95 # This needs to be changed
         # epsion-greedy params
         eps_start = 0.9
