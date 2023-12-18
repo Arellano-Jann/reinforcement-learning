@@ -8,10 +8,12 @@ test_cart:
 	python3 .test_cart.py
 
 car:
-	python3 car.py
+	python3 car.py --train
+	python3 car.py --test --model cart.npy
 
 cart:
-	python3 cart.py
+	python3 cart.py --train
+	python3 cart.py --test --model cart.npy
 
 test:
 	make test_car
